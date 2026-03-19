@@ -78,8 +78,8 @@ jobs:
             --cli-input-json file://clean-task-definition.json \
             --query 'taskDefinition.taskDefinitionArn' \
             --output text)
-
-            echo "task_def_arn=$TASK_DEF_ARN" >> $GITHUB_OUTPUT-input-json file://clean-task-definition.json
+            echo "TASK DEF ARN=$TASK_DEF_ARN"
+            echo "task_def_arn=$TASK_DEF_ARN" >> $GITHUB_OUTPUT
 
       - name: Update ECS service
         run: |
