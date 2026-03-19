@@ -1,8 +1,15 @@
-name: Build and Push to ECR
+name: CI/CD to ECS
 on: 
   push:
     branches:
       - main
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: wecare
+  ECS_CLUSTER: wecare-cluster
+  ECS_SERVICE: wecare-service-lcx0jzxf
+  ECS_TASK_DEFINITION: wecare
 
 
 jobs:
@@ -20,6 +27,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to ECR
+        id: login-ecr 
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Set ECR image URI
@@ -39,6 +47,27 @@ jobs:
         run: | 
           docker push $ECR_URI:${{ github.sha }} 
 
+      - name: Download task definition
+        run: |
+            aws ecs describe-task-definition \
+            --task-definition $ECS_TASK_DEFINITION \
+            --query taskDefinition > task-definition.json
+
+      - name: Update image in task definition
+        run: |
+            sed -i "s|image\": \".*\"|image\": \"${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:${{ github.sha }}\"|g" task-definition.json
+
+      - name: Register new task definition
+        run: |
+            aws ecs register-task-definition \
+            --cli-input-json file://task-definition.json
+
+      - name: Update ECS service
+        run: |
+            aws ecs update-service \
+            --cluster $ECS_CLUSTER \
+            --service $ECS_SERVICE \
+            --force-new-deployment
 
 #   deploy:
 #     needs: build
