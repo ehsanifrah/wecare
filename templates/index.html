@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %} Index Page {% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message|safe }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+        {% endif %}
+    {% endwith %}  
+    
+    
+    <div class="container-fluid">
+        <div class="mt-4">
+            <div class="d-grid gap-2 d-md-block text-center">
+                <a  class=" btn btn-dark btn-lg mx-auto"  
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#doctorform" 
+                    role="button" 
+                    aria-expanded="false" 
+                    aria-controls="doctorform"> 
+                Doctor </a>  
+                <a class="btn btn-dark btn-lg mx-auto" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#patientform" 
+                    role="button" 
+                    aria-expanded="false" 
+                    aria-controls="patientform">
+                Patient </a>       
+            </div>
+        
+            <!-- Patient Form -->
+            <div class="collapse mt-3" id="patientform">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="card card-body">
+                            <form method="post" action="{{url_for('index')}}">
+                                <input type="hidden" name="form_type" value="patient">
+                                <div class="mb-3">
+                                    <label for="patient_id"  class="form-label">Patient Id</label>
+                                    <input type="text" class="form-control" name="patient_id" id="patient_id" placeholder="Patient Id">
+                                </div><div class="mb-3">
+                                    <label for="name"  class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" name="name" id="name" placeholder="Full Name">
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Submit</button>
+                            </form>
+                            <p class="text-center mt-4">
+                                Not registered? <a href="{{url_for('register')}}">Register here</a>
+                            </p>   
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <!-- Doctor Form-->
+            <div class="collapse mt-3" id="doctorform">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="card card-body">
+                            <form method="post" action="{{url_for('index')}}">
+                                <input type="hidden" name="form_type" value="doctor">
+                                <div class="mb-3">
+                                    <label for="doc_email"  class="form-label">Email</label>
+                                    <input type="text" class="form-control" name="doc_email" id="doc_email" placeholder="@wecare.com">
+                                </div><div class="mb-3">
+                                    <label for="name"  class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" name="doc_name" id="name" placeholder="Full Name">
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Submit</button>
+                            </form> 
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+    </div>
+               
+{% endblock %}
+

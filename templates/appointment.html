@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %} Register {% endblock %}
+
+
+{% block content %}
+    
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-6 mt-4">
+            <p class="h6 text-muted">Enter details to confirm Appointment</p>
+                <div class="card card-body">
+                    <form class="row g-3" method="POST">
+                        <div class="col-12">
+                            <label for="fullname" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" disabled value="{{patient.name}}" id="fullname">
+                        </div>
+                        <div class="col-6">
+                            <label for="dept" class="form-label">Department</label>
+                            <select class="form-control select2" id="dept" name="dept_id">
+                                {% for dept in departments %}
+                                    <option value="{{ dept.id }}">{{ dept.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-6">
+                            <label for="doctor" class="form-label">Doctor</label>
+                            <select class="form-control select2" id="doctor" name="doctor_id">
+                                {% for doc in doctors %}
+                                    <option value="{{ doc.id }}">{{ doc.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        
+                        <div class="d-grid col-12">
+                            <button type="submit" class="btn btn-primary">Book Appointment</button>
+                        </div>
+                    </form>
+                    <p class="text-center mt-2">
+                        View Appointment Details <a href="{{url_for('patient_details')}}"> Here</a>
+                    </p>
+                </div>
+            </div>
+        </div>    
+    </div>
+
+
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Select an option",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+</script>
+
+{% endblock %}
+

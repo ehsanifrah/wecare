@@ -1,0 +1,9 @@
+services:
+  wecare-app:
+    build: .
+    container_name: wecare_app
+    ports:
+      - "5555:5555"
+    volumes:
+      - .:/app
+    restart: always

@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+
+# Environment variables
+.env
+
+# SQLite database
+*.db
+
+# VS Code
+.vscode/
+
+# Migrations cache (optional)
+migrations/__pycache__/
+
+# Docker
+*.log
