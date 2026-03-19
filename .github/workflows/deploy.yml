@@ -69,7 +69,7 @@ jobs:
             .compatibilities,
             .registeredAt,
             .registeredBy
-            )' task-definition.json > clean-task-definition.json
+            )' updated-task-definition.json > clean-task-definition.json
 
       - name: Register new task definition
         id: register-task
@@ -81,12 +81,15 @@ jobs:
             echo "TASK DEF ARN=$TASK_DEF_ARN"
             echo "task_def_arn=$TASK_DEF_ARN" >> $GITHUB_OUTPUT
 
+      - name: Debug task def
+        run: echo "Task Def ARN = ${{ steps.register-task.outputs.task_def_arn }}"
+        
       - name: Update ECS service
         run: |
             aws ecs update-service \
             --cluster $ECS_CLUSTER \
             --service $ECS_SERVICE \
-            --task-definition ${{ steps.register-task.outputs.task_def_arn }} \
+            --task-definition wecare \
             --force-new-deployment
 
 #   deploy:
