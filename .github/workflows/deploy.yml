@@ -57,10 +57,22 @@ jobs:
         run: |
             sed -i "s|image\": \".*\"|image\": \"${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:${{ github.sha }}\"|g" task-definition.json
 
+      - name: Clean task definition
+        run: |
+            jq 'del(
+            .taskDefinitionArn,
+            .revision,
+            .status,
+            .requiresAttributes,
+            .compatibilities,
+            .registeredAt,
+            .registeredBy
+            )' task-definition.json > clean-task-definition.json
+
       - name: Register new task definition
         run: |
             aws ecs register-task-definition \
-            --cli-input-json file://task-definition.json
+            --cli-input-json file://clean-task-definition.json
 
       - name: Update ECS service
         run: |
