@@ -55,7 +55,9 @@ jobs:
 
       - name: Update image in task definition
         run: |
-            sed -i "s|image\": \".*\"|image\": \"${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:${{ github.sha }}\"|g" task-definition.json
+            jq --arg IMAGE "${{ needs.build.outputs.image_tag }}" \
+            '.containerDefinitions[0].image = $IMAGE' \
+            task-definition.json > updated-task-definition.json
 
       - name: Clean task definition
         run: |
@@ -70,15 +72,21 @@ jobs:
             )' task-definition.json > clean-task-definition.json
 
       - name: Register new task definition
+        id: register-task
         run: |
-            aws ecs register-task-definition \
-            --cli-input-json file://clean-task-definition.json
+            TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --cli-input-json file://clean-task-definition.json \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+
+            echo "task_def_arn=$TASK_DEF_ARN" >> $GITHUB_OUTPUT-input-json file://clean-task-definition.json
 
       - name: Update ECS service
         run: |
             aws ecs update-service \
             --cluster $ECS_CLUSTER \
             --service $ECS_SERVICE \
+            --task-definition ${{ steps.register-task.outputs.task_def_arn }} \
             --force-new-deployment
 
 #   deploy:
