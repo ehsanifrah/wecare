@@ -55,7 +55,8 @@ jobs:
 
       - name: Update image in task definition
         run: |
-            jq --arg IMAGE "${{ needs.build.outputs.image_tag }}" \
+            IMAGE="$ECR_URI:${{ github.sha }}"
+            jq --arg IMAGE "$IMAGE" \
             '.containerDefinitions[0].image = $IMAGE' \
             task-definition.json > updated-task-definition.json
 
@@ -83,7 +84,7 @@ jobs:
 
       - name: Debug task def
         run: echo "Task Def ARN = ${{ steps.register-task.outputs.task_def_arn }}"
-        
+
       - name: Update ECS service
         run: |
             aws ecs update-service \
