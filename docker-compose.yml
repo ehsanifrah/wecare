@@ -1,6 +1,6 @@
 services:
   wecare-app:
-    build: .
+    build: 975049893953.dkr.ecr.us-east-1.amazonaws.com/wecare:${IMAGE_TAG}
     container_name: wecare_app
     ports:
       - "5555:5555"
